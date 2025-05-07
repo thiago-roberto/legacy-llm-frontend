@@ -21,7 +21,7 @@ const LLMFeature = () => {
             const data = await res.json();
             setResponse(data.result);
         } catch (err) {
-            setResponse('Something went wrong.');
+            setResponse(`Something went wrong. ${err}`);
         } finally {
             setLoading(false);
         }

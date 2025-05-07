@@ -24,12 +24,12 @@ const SearchFeature = () => {
             });
             const data = await res.json();
             if (data.results) {
-                setResults(data.results.map((r: any) => r.pageContent));
+                setResults(data.results.map((r) => r.pageContent));
             } else {
                 setError('No results found.');
             }
         } catch (err) {
-            setError('Failed to fetch results.');
+            setError(`Failed to fetch results. ${err}`);
         } finally {
             setLoading(false);
         }
