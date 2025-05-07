@@ -24,7 +24,7 @@ const SearchFeature = () => {
             });
             const data = await res.json();
             if (data.results) {
-                setResults(data.results.map((r: unknown) => r.pageContent));
+                setResults(data.results.map((r: any) => r.pageContent));
             } else {
                 setError('No results found.');
             }
