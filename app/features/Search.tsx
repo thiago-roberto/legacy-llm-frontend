@@ -24,6 +24,7 @@ const SearchFeature = () => {
             });
             const data = await res.json();
             if (data.results) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 setResults(data.results.map((r: any) => r.pageContent));
             } else {
                 setError('No results found.');
