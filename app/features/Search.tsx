@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { sanitizeInput } from '@/helpers/sanitizer';
 
 const MAX_LENGTH = 500;
 
@@ -12,10 +13,10 @@ const SearchFeature = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    // Validate input length and emptiness on every change
     const handleChange = (value: string) => {
-        setQuery(value);
-        const trimmed = value.trim();
+        const cleanValue = sanitizeInput(value);
+        setQuery(cleanValue);
+        const trimmed = cleanValue.trim();
 
         if (trimmed.length === 0) {
             setError('Input cannot be empty.');

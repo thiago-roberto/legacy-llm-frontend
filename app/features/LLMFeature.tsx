@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import {sanitizeInput} from "@/helpers/sanitizer";
 
 const MAX_LENGTH = 500;
 
@@ -12,8 +13,10 @@ const LLMFeature = () => {
     const [error, setError] = useState<string | null>(null);
 
     const handleChange = (value: string) => {
-        setInput(value);
-        const trimmed = value.trim();
+        const cleanValue = sanitizeInput(value);
+        setInput(cleanValue);
+        const trimmed = cleanValue.trim();
+
         if (trimmed.length === 0) {
             setError('Input cannot be empty.');
         } else if (trimmed.length > MAX_LENGTH) {
