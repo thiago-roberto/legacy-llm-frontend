@@ -14,8 +14,9 @@ const LLMFeature = () => {
     const handleChange = (value: string) => {
         setInput(value);
         const trimmed = value.trim();
-
-        if (trimmed.length > MAX_LENGTH) {
+        if (trimmed.length === 0) {
+            setError('Input cannot be empty.');
+        } else if (trimmed.length > MAX_LENGTH) {
             setError(`Input must be at most ${MAX_LENGTH} characters.`);
         } else {
             setError(null);
