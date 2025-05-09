@@ -4,14 +4,12 @@ import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SearchFeature from '@/features/Search';
-import MLFeature from '@/features/MLFeature';
 import LLMFeature from '@/features/LLMFeature';
 import { HomeIcon, SearchIcon, MessageSquareIcon } from 'lucide-react';
 import {Button} from "@/components/ui/button";
 
 const features = [
     { id: 'search', label: 'Search Examples', icon: SearchIcon },
-    { id: 'ml', label: 'ML Prediction', icon: HomeIcon },
     { id: 'llm', label: 'LLM Suggestion', icon: MessageSquareIcon },
 ];
 
@@ -25,7 +23,6 @@ export default function Page() {
             {/* Main Content */}
             <main className="flex-grow p-4">
                 {activeFeature === 'search' && <SearchFeature />}
-                {activeFeature === 'ml' && <MLFeature />}
                 {activeFeature === 'llm' && <LLMFeature />}
             </main>
 
