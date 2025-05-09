@@ -5,7 +5,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SearchFeature from '@/features/Search';
 import LLMFeature from '@/features/LLMFeature';
-import { HomeIcon, SearchIcon, MessageSquareIcon } from 'lucide-react';
+import { SearchIcon, MessageSquareIcon } from 'lucide-react';
 import {Button} from "@/components/ui/button";
 
 const features = [

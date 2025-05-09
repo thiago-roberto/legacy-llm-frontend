@@ -11,9 +11,10 @@ interface ApiResponse {
     sources?: string[];
 }
 
-const LLMFeature = () => {
+const LLMFeature: React.FC = () => {
     const [input, setInput] = useState('');
-    const [response, setResponse] = useState<string | null>(null);
+    const [rawResponse, setRawResponse] = useState<string | null>(null);
+    const [formattedResponse, setFormattedResponse] = useState<string | null>(null);
     const [sources, setSources] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -22,7 +23,6 @@ const LLMFeature = () => {
         const cleanValue = sanitizeInput(value);
         setInput(cleanValue);
         const trimmed = cleanValue.trim();
-
         if (trimmed.length === 0) {
             setError('Input cannot be empty.');
         } else if (trimmed.length > MAX_LENGTH) {
@@ -34,9 +34,9 @@ const LLMFeature = () => {
 
     const handleAsk = async () => {
         if (error) return;
-
         setLoading(true);
-        setResponse(null);
+        setRawResponse(null);
+        setFormattedResponse(null);
         setSources([]);
 
         try {
@@ -48,17 +48,29 @@ const LLMFeature = () => {
                     body: JSON.stringify({ input: input.trim() }),
                 }
             );
-
             if (!res.ok) {
                 const errData = await res.json();
                 throw new Error(errData.error || 'Request failed');
             }
-
             const data: ApiResponse = await res.json();
-            setResponse(data.result);
-            if (data.sources) setSources(data.sources);
+            setRawResponse(data.result);
+            const html = data.result
+                // escape HTML special chars first (optional, if you trust the content you can skip)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                // now replace **...**
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                // convert newlines to <br>
+                .replace(/\n/g, '<br/>');
+
+            setFormattedResponse(html);
+            if (data.sources) {
+                const unique = Array.from(new Set(data.sources));
+                setSources(unique);
+            }
         } catch (err: any) {
-            setResponse(`Something went wrong. ${err.message}`);
+            setError(`Something went wrong. ${err.message}`);
         } finally {
             setLoading(false);
         }
@@ -86,11 +98,15 @@ const LLMFeature = () => {
                 <Button onClick={handleAsk} disabled={isButtonDisabled}>
                     {loading ? 'Thinking...' : 'Ask for Advice'}
                 </Button>
-                {response && (
+
+                {formattedResponse && (
                     <div className="mt-4 space-y-2">
                         <div>
                             <strong>Suggestion:</strong>
-                            <p className="mt-2 whitespace-pre-line">{response}</p>
+                            <div
+                                className="mt-2 prose prose-sm max-w-none"
+                                dangerouslySetInnerHTML={{ __html: formattedResponse }}
+                            />
                         </div>
                         {sources.length > 0 && (
                             <div className="text-xs text-gray-600">

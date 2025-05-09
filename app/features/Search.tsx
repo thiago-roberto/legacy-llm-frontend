@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { sanitizeInput } from '@/helpers/sanitizer'
+import {SearchResult} from "@/interfaces/SearchResult";
 
 const MAX_LENGTH = 500
 
@@ -53,7 +54,7 @@ const SearchFeature: React.FC = () => {
                 const data = await res.json()
                 throw new Error(data.error || 'Request failed')
             }
-            const data = await res.json()
+            const data: { results: SearchResult[] } = await res.json()
             if (data.results) {
                 setResults(
                     data.results.map((r: any) => {
