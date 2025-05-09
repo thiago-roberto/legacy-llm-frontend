@@ -57,7 +57,7 @@ const SearchFeature: React.FC = () => {
             const data: { results: SearchResult[] } = await res.json()
             if (data.results) {
                 setResults(
-                    data.results.map((r: any) => {
+                    data.results.map((r) => {
                         if (typeof r.pageContent === 'string') {
                             return {
                                 content: r.pageContent,
@@ -74,6 +74,7 @@ const SearchFeature: React.FC = () => {
             } else {
                 setError('No results found.')
             }
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
             setError(`Failed to fetch results. ${err.message}`)
         } finally {

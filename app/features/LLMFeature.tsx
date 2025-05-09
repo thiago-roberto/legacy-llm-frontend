@@ -13,7 +13,6 @@ interface ApiResponse {
 
 const LLMFeature: React.FC = () => {
     const [input, setInput] = useState('');
-    const [rawResponse, setRawResponse] = useState<string | null>(null);
     const [formattedResponse, setFormattedResponse] = useState<string | null>(null);
     const [sources, setSources] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
@@ -35,7 +34,6 @@ const LLMFeature: React.FC = () => {
     const handleAsk = async () => {
         if (error) return;
         setLoading(true);
-        setRawResponse(null);
         setFormattedResponse(null);
         setSources([]);
 
@@ -53,9 +51,7 @@ const LLMFeature: React.FC = () => {
                 throw new Error(errData.error || 'Request failed');
             }
             const data: ApiResponse = await res.json();
-            setRawResponse(data.result);
             const html = data.result
-                // escape HTML special chars first (optional, if you trust the content you can skip)
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
@@ -69,6 +65,7 @@ const LLMFeature: React.FC = () => {
                 const unique = Array.from(new Set(data.sources));
                 setSources(unique);
             }
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (err: any) {
             setError(`Something went wrong. ${err.message}`);
         } finally {
