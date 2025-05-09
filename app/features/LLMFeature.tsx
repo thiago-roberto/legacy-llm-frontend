@@ -2,13 +2,19 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import {sanitizeInput} from "@/helpers/sanitizer";
+import { sanitizeInput } from '@/helpers/sanitizer';
 
 const MAX_LENGTH = 500;
+
+interface ApiResponse {
+    result: string;
+    sources?: string[];
+}
 
 const LLMFeature = () => {
     const [input, setInput] = useState('');
     const [response, setResponse] = useState<string | null>(null);
+    const [sources, setSources] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -31,21 +37,26 @@ const LLMFeature = () => {
 
         setLoading(true);
         setResponse(null);
+        setSources([]);
 
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/ask`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ input: input.trim() }),
-            });
+            const res = await fetch(
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/ask`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ input: input.trim() }),
+                }
+            );
 
             if (!res.ok) {
                 const errData = await res.json();
                 throw new Error(errData.error || 'Request failed');
             }
 
-            const data = await res.json();
+            const data: ApiResponse = await res.json();
             setResponse(data.result);
+            if (data.sources) setSources(data.sources);
         } catch (err: any) {
             setResponse(`Something went wrong. ${err.message}`);
         } finally {
@@ -76,9 +87,16 @@ const LLMFeature = () => {
                     {loading ? 'Thinking...' : 'Ask for Advice'}
                 </Button>
                 {response && (
-                    <div className="mt-4">
-                        <strong>Suggestion:</strong>
-                        <p className="mt-2 whitespace-pre-line">{response}</p>
+                    <div className="mt-4 space-y-2">
+                        <div>
+                            <strong>Suggestion:</strong>
+                            <p className="mt-2 whitespace-pre-line">{response}</p>
+                        </div>
+                        {sources.length > 0 && (
+                            <div className="text-xs text-gray-600">
+                                <strong>Sources used:</strong> {sources.join(', ')}
+                            </div>
+                        )}
                     </div>
                 )}
             </CardContent>
