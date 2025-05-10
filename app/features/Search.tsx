@@ -58,15 +58,11 @@ const SearchFeature: React.FC = () => {
             if (data.results) {
                 setResults(
                     data.results.map((r) => {
+                        console.log(r);
                         if (typeof r.pageContent === 'string') {
                             return {
                                 content: r.pageContent,
-                                source: 'search_index',
-                            }
-                        } else {
-                            return {
-                                content: r.pageContent.content,
-                                source: r.pageContent.metadata?.name || 'unknown',
+                                source: r.source,
                             }
                         }
                     })
