@@ -8,7 +8,6 @@ import {SearchResult} from "@/interfaces/SearchResult";
 
 const MAX_LENGTH = 500
 
-//–– move your `type` to the top so TSX mode never gets broken
 type Hit = {
     content: string
     source: string
