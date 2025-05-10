@@ -1,2 +1,4 @@
 export interface SearchResult {
-    pageContent: { content: string; source: string };}
+    pageContent: { content: string },
+    source: string
+}
